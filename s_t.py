@@ -15,11 +15,12 @@ from gtts import gTTS
 from googletrans import Translator
 
 
-st.title("TRADUCTOR.")
-st.subheader("Escucho lo que quieres traducir.")
+st.title("TRADUCTOR")
+st.subheader("¡Comunícate con todos!")
+st.write("No entiendes lo que dice alguien? No te preocupes! Yo escucho lo que están diciendo, y lo traduzco!")
 
 
-image = Image.open('OIG7.jpg')
+image = Image.open('talking.jpg')
 
 st.image(image,width=300)
 with st.sidebar:
