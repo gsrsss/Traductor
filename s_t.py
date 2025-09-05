@@ -1,100 +1,36 @@
 import os
 import streamlit as st
 from bokeh.models.widgets import Button
+#from bokeh.io import show
+#from bokeh.models import Button
 from bokeh.models import CustomJS
 from streamlit_bokeh_events import streamlit_bokeh_events
 from PIL import Image
 import time
 import glob
+
+
+
 from gtts import gTTS
 from googletrans import Translator
 
-# --- CÓDIGO ORIGINAL SIN CAMBIOS ---
+
 st.title("TRADUCTOR")
 st.subheader("¡Comunícate con todos!")
-st.write("No entiendes lo que dice alguien? No te preocupes! Yo escucho o léo lo que necesitas entender, y lo traduzco!")
+st.write("No entiendes lo que dice alguien? No te preocupes! Yo escucho lo que están diciendo, y lo traduzco!")
+
 
 image = Image.open('talking.jpg')
-st.image(image, width=300)
 
+st.image(image,width=300)
 with st.sidebar:
     st.subheader("Traductor.")
     st.write("Presiona el botón, cuando escuches la señal "
-             "habla lo que quieres traducir, luego selecciona"
+             "habla lo que quieres traducir, luego selecciona"    
              " la configuración de lenguaje que necesites.")
 
-# --- INICIO DE LA NUEVA SECCIÓN: TRADUCCIÓN POR TEXTO ---
-st.subheader("Opción 1: Traducir Texto Escrito 📝")
 
-# Usamos una clave única para el área de texto para evitar conflictos
-text_input = st.text_area("Escribe aquí el texto que quieres traducir:", key="text_input_area")
-
-# Se crea una instancia del traductor para esta sección
-translator_text = Translator()
-
-# Se copian los selectores de idioma para que esta sección sea independiente
-in_lang_text = st.selectbox(
-    "Selecciona el lenguaje de Entrada",
-    ("Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"),
-    key="in_lang_text"
-)
-out_lang_text = st.selectbox(
-    "Selecciona el lenguaje de salida",
-    ("Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"),
-    key="out_lang_text"
-)
-english_accent_text = st.selectbox(
-    "Selecciona el acento",
-    ("Defecto", "Español", "Reino Unido", "Estados Unidos", "Canada", "Australia", "Irlanda", "Sudáfrica"),
-    key="accent_text"
-)
-
-# Lógica para la traducción de texto al presionar un botón
-if st.button("Traducir Texto", key="translate_text_button"):
-    if text_input:
-        # Asignación de códigos de idioma
-        lang_map = {"Inglés": "en", "Español": "es", "Bengali": "bn", "Coreano": "ko", "Mandarín": "zh-cn", "Japonés": "ja"}
-        input_language_text = lang_map[in_lang_text]
-        output_language_text = lang_map[out_lang_text]
-
-        # Asignación de acentos
-        accent_map = {"Defecto": "com", "Español": "com.mx", "Reino Unido": "co.uk", "Estados Unidos": "com", "Canada": "ca", "Australia": "com.au", "Irlanda": "ie", "Sudáfrica": "co.za"}
-        tld_text = accent_map[english_accent_text]
-
-        # Proceso de traducción y conversión a audio
-        translation = translator_text.translate(text_input, src=input_language_text, dest=output_language_text)
-        trans_text = translation.text
-        
-        tts = gTTS(trans_text, lang=output_language_text, tld=tld_text, slow=False)
-        
-        try:
-            os.mkdir("temp")
-        except FileExistsError:
-            pass
-            
-        file_name = text_input[0:20].replace(" ", "_") if text_input else "audio_text"
-        tts.save(f"temp/{file_name}.mp3")
-        
-        # Mostrar resultados
-        st.markdown("## Texto de salida:")
-        st.write(f" {trans_text}")
-        
-        audio_file = open(f"temp/{file_name}.mp3", "rb")
-        audio_bytes = audio_file.read()
-        st.markdown(f"## Tú audio:")
-        st.audio(audio_bytes, format="audio/mp3", start_time=0)
-    else:
-        st.warning("Por favor, ingresa un texto para traducir.")
-
-# Divisor para separar las dos funcionalidades
-st.divider()
-
-# --- FIN DE LA NUEVA SECCIÓN ---
-
-
-# --- INICIO DEL CÓDIGO ORIGINAL PARA TRADUCCIÓN POR VOZ ---
-st.subheader("Opción 2: Traducir con tu Voz 🎤")
-st.write("Toca el botón y habla lo que quieres traducir")
+st.write("Toca el botón y habla lo que quires traducir")
 
 stt_button = Button(label=" Escuchar  🎤", width=300,  height=50)
 
@@ -127,7 +63,7 @@ result = streamlit_bokeh_events(
 
 if result:
     if "GET_TEXT" in result:
-        st.write("Texto reconocido: ", result.get("GET_TEXT"))
+        st.write(result.get("GET_TEXT"))
     try:
         os.mkdir("temp")
     except:
@@ -138,7 +74,7 @@ if result:
     text = str(result.get("GET_TEXT"))
     in_lang = st.selectbox(
         "Selecciona el lenguaje de Entrada",
-        ("Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"), key="in_lang_voice"
+        ("Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"),
     )
     if in_lang == "Inglés":
         input_language = "en"
@@ -155,7 +91,7 @@ if result:
     
     out_lang = st.selectbox(
         "Selecciona el lenguaje de salida",
-        ("Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"), key="out_lang_voice"
+        ("Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"),
     )
     if out_lang == "Inglés":
         output_language = "en"
@@ -181,7 +117,7 @@ if result:
             "Australia",
             "Irlanda",
             "Sudáfrica",
-        ), key="accent_voice"
+        ),
     )
     
     if english_accent == "Defecto":
