@@ -12,7 +12,7 @@ from googletrans import Translator
 # --- CÓDIGO ORIGINAL SIN CAMBIOS ---
 st.title("TRADUCTOR")
 st.subheader("¡Comunícate con todos!")
-st.write("No entiendes lo que dice alguien? No te preocupes! Yo escucho lo que están diciendo, y lo traduzco!")
+st.write("No entiendes lo que dice alguien? No te preocupes! Yo escucho o léo lo que necesitas entender, y lo traduzco!")
 
 image = Image.open('talking.jpg')
 st.image(image, width=300)
