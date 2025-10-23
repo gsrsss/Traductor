@@ -83,22 +83,75 @@ result = streamlit_bokeh_events(
     override_height=75,
     debounce_time=0)
 
-# --- PROCESAMIENTO DE TRADUCCIÓN ---
-if result:
-    if "GET_TEXT" in result:
-        st.write(result.get("GET_TEXT"))
+# --- PROCESAMIENTO DE TRADUCCIÓN (Activado si hay un resultado de voz) ---
+if result and "GET_TEXT" in result:
+    
+    recognized_text = result.get("GET_TEXT")
+    st.markdown("## Texto Reconocido:")
+    st.write(recognized_text)
+
     try:
         os.mkdir("temp")
-    except:
+    except FileExistsError:
         pass
-    st.title("Texto a Audio")
+        
+    st.markdown("---")
+    st.title("Traducción y Audio")
     translator = Translator()
     
-    text = str(result.get("GET_TEXT"))
-    
-    # SelectBox de Idioma de Entrada
+    # 1. Selección de Idioma de Entrada
     in_lang_name = st.selectbox(
         "Selecciona el lenguaje de Entrada",
         NOMBRES_IDIOMAS,
+        key="select_in_lang" # Agregado key para evitar errores si el usuario interactúa
     )
     input_language = IDIOMAS_DISPONIBLES[in_lang_name]
+    
+    # 2. Selección de Idioma de Salida
+    out_lang_name = st.selectbox(
+        "Selecciona el lenguaje de salida",
+        NOMBRES_IDIOMAS,
+        key="select_out_lang" # Agregado key para evitar errores si el usuario interactúa
+    )
+    output_language = IDIOMAS_DISPONIBLES[out_lang_name]
+
+    # --- LÓGICA DE SELECCIÓN DE ACENTO (sin cambios) ---
+    english_accent = st.selectbox(
+        "Selecciona el acento",
+        (
+            "Defecto", "Español", "Reino Unido", "Estados Unidos",
+            "Canada", "Australia", "Irlanda", "Sudáfrica",
+        ),
+    )
+    
+    tld_map = {
+        "Defecto": "com", "Español": "com.mx", "Reino Unido": "co.uk", 
+        "Estados Unidos": "com", "Canada": "ca", "Australia": "com.au", 
+        "Irlanda": "ie", "Sudáfrica": "co.za"
+    }
+    tld = tld_map.get(english_accent, "com")
+    
+    
+    def text_to_speech(input_lang, output_lang, text_to_translate, accent_tld):
+        """Traduce el texto y lo convierte a audio."""
+        try:
+            translation = translator.translate(text_to_translate, src=input_lang, dest=output_lang)
+            trans_text = translation.text
+            # gTTS es sensible al idioma de salida, usa el tld si aplica, o 'com' por defecto.
+            tts = gTTS(trans_text, lang=output_lang, tld=accent_tld, slow=False) 
+            
+            # Crea un nombre de archivo seguro
+            my_file_name = text_to_translate[:20].replace(" ", "_").replace("/", "") or "audio"
+            file_path = f"temp/{my_file_name}.mp3"
+            tts.save(file_path)
+            return my_file_name, trans_text
+        except Exception as e:
+            st.error(f"Error durante la traducción/audio: {e}")
+            return None, "Error de traducción."
+
+    
+    display_output_text = st.checkbox("Mostrar el texto de la traducción")
+    
+    # --- EL BOTÓN CLAVE QUE EJECUTA LA TRADUCCIÓN ---
+    # Al pulsarse, se inicia el proceso de traducción y generación de audio.
+    if st.button("Convertir y Traducir"):
