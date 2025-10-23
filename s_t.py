@@ -39,7 +39,7 @@ image = Image.open('descarga (9).jpeg')
 st.image(image, width=300)
 
 with st.sidebar:
-    st.subheader("Traductor.")
+    st.subheader("Traductor")
     st.markdown("### Idiomas disponibles:")
     for nombre in NOMBRES_IDIOMAS:
         st.write(f"- {nombre}")
