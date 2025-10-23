@@ -35,7 +35,7 @@ st.title("TRADUCTOR")
 st.subheader("¡Comunícate con todos! ꉂ(˵˃ ᗜ ˂˵)")
 st.write("Yo escucho lo que dicen, y lo traduzco. ¡Presiona 'Escuchar' para empezar!")
 
-image = Image.open('talking.jpg')
+image = Image.open('descarga (9).jpeg')
 st.image(image, width=300)
 
 with st.sidebar:
