@@ -32,7 +32,7 @@ NOMBRES_IDIOMAS = list(IDIOMAS_DISPONIBLES.keys())
 
 # --- CONFIGURACIÓN DE STREAMLIT ---
 st.title("TRADUCTOR")
-st.subheader("¡Comunícate con todos! 🗣️")
+st.subheader("¡Comunícate con todos! ꉂ(˵˃ ᗜ ˂˵)")
 st.write("Yo escucho lo que dicen, y lo traduzco. ¡Presiona 'Escuchar' para empezar!")
 
 image = Image.open('talking.jpg')
@@ -45,10 +45,10 @@ with st.sidebar:
         st.write(f"- {nombre}")
     st.write("Presiona el botón, habla lo que quieres traducir, luego selecciona la configuración de lenguaje.")
 
-st.write("Toca el botón y habla lo que quieres traducir 👇")
+st.write("Toca el botón y habla lo que quieres traducir .𖥔 ݁ ˖๋ ࣭ ⭑")
 
 # --- FUNCIONALIDAD DE VOZ A TEXTO (NO SE MODIFICÓ) ---
-stt_button = Button(label=" Escuchar  🎤", width=300,  height=50)
+stt_button = Button(label=" Escuchar ♡", width=300,  height=50)
 
 stt_button.js_on_event("button_click", CustomJS(code="""
     var recognition = new webkitSpeechRecognition();
@@ -147,7 +147,7 @@ if result and "GET_TEXT" in result:
         
         if file_name:
             # 3. Se escribe la traducción y se reproduce el audio
-            st.markdown(f"## ✅ Traducción Completa")
+            st.markdown(f"## Traducción Completa ᯓ★")
             
             if display_output_text:
                 st.markdown(f"**Texto Traducido a {out_lang_name}:**")
